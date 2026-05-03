@@ -1,6 +1,9 @@
-# LinuxPsTools
+# LinuxPsTools and BuildModule
 
-A comprehensive PowerShell module for Linux-based barcode scanning, display control, voice generation, and product information lookup.
+This repository contains two PowerShell modules:
+
+- `LinuxPSTools` — Linux-focused utilities for barcode scanning, display control, voice generation, and product information lookup.
+- `BuildModule` — build automation and SonarQube tooling for .NET and PowerShell projects.
 
 ## Features
 
@@ -50,6 +53,14 @@ Import-Module .\LinuxPsTools.psd1
 ### VoiceGenerator Module
 - `Send-ToVoiceGenerator` - Convert text to speech
 
+### BuildModule
+- `Publish-Nuget` - Publish a NuGet package
+- `Build-Project` - Build a project or solution
+- `Get-SecureStringFromUserInput` - Prompt the user for secure string input
+- `Test-SonarToolInstalled` - Check whether Sonar tools are installed
+- `Install-SonarDotNetTool` - Install Sonar .NET analyzer tooling
+- `Invoke-SonarAnalysis` - Run SonarQube analysis
+
 ## Usage Examples
 
 ### Basic Barcode Scanning
@@ -93,13 +104,19 @@ Get-KeyboardLayout
 
 ## Module Structure
 
-The module consists of separate .psm1 files for better organization:
+This repository contains two separate modules:
 
-- `BarcodeInfo.psm1` - Product information lookup
-- `BarcodeScanner.psm1` - Barcode scanning functionality
-- `GigatekDisplay.psm1` - Serial display control
-- `VoiceGenerator.psm1` - Text-to-speech
-- `LinuxPsTools.psd1` - Module manifest
+- `LinuxPSTools/`
+  - `BarcodeInfo.psm1` - Product information lookup
+  - `BarcodeScanner.psm1` - Barcode scanning functionality
+  - `GigatekDisplay.psm1` - Serial display control
+  - `VoiceGenerator.psm1` - Text-to-speech
+  - `LinuxPsTools.psd1` - LinuxPsTools module manifest
+- `BuildModule/`
+  - `BuildTools.psm1` - Build automation functions
+  - `UserInputTools.psm1` - Secure user input helpers
+  - `SonarQube.psm1` - Sonar analysis tool functions
+  - `BuildModule.psd1` - BuildModule manifest
 
 ## Hardware Requirements
 

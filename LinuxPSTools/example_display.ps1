@@ -75,7 +75,18 @@ while ($true)
         $row2Offset = 0
     }
 
-    $row1 = $radioName.PadRight(20)
+    $currentTime = Get-Date -Format 'HH:mm:ss'
+    $cycleMode = [math]::Floor((Get-Date).Second / 10) % 4
+    switch ($cycleMode)
+    {
+        0 { $row1Source = [string]$radioName }
+        1 { $row1Source = [string]$radioFreq }
+        2 { $row1Source = [string]$radioStatus }
+        3 { $row1Source = $currentTime }
+        default { $row1Source = [string]$radioName }
+    }
+
+    $row1 = $row1Source.PadRight(20)
     if ($row1.length -gt 20)
     {
         $row1 = $row1.Substring(0, 20)

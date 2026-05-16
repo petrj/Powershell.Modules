@@ -14,11 +14,9 @@
     <!-- <PackageReference Include="LoggerService" /--> 
   </ItemGroup>
   <ItemGroup>
-    <None Include="Powershell.Modules\**\*">
+    <Content Include="BuildModule\**\*;LinuxPSTools\**\*">
       <Pack>true</Pack>
-      <PackagePath>Powershell.Modules\%(RecursiveDir)</PackagePath>
-      <Link>Powershell.Modules\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>    
+      <PackagePath>Powershell.Modules\%(Identity)</PackagePath>      
+    </Content>
   </ItemGroup>
 </Project>

@@ -4,4 +4,6 @@ Import-Module ./Powershell.Modules/BuildModule/BuildModule.psd1
 
 $token = Get-SecureStringFromUserInput -Message "Enter github access token:" -EnvironmentVariable $env:GITHUB_TOKEN
 
-Publish-Nuget -ProjectName "Powershell.Modules" -PackageVersion "1.0.0" -SolutionPath "." -Token $token
+dotnet build -c Release .\Powershell.Modules\Powershell.Modules.csproj
+
+Publish-Nuget -ProjectName "Powershell.Modules" -PackageVersion "1.0.2" -SolutionPath "." -Token $token

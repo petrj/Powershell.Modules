@@ -8,12 +8,16 @@
     CompatiblePSEditions = @('Desktop', 'Core')
 
     NestedModules     = @(
+        'AndroidBuildTools',
         'BuildTools.psm1',
         'UserInputTools.psm1',
         'SonarQube.psm1'
     )
 
     FunctionsToExport = @(
+        'Publish-AABPackage',
+        'Protect-BySignature',
+        'ConvertTo-APK',
         'Publish-Nuget',
         'Build-Project',
         'Get-SecureStringFromUserInput',

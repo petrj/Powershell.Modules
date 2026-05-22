@@ -14,5 +14,10 @@ if (Get-Module -Name LinuxPSTools)
 Import-Module .\LinuxPSTools.psd1
 
 $SNAPIStream = Open-SNAPIBarcodeScanner -DevicePath "/dev/hidraw0"
+
+if ( $SNAPIStream -eq $null )
+{
+    throw "Failed to open SNAPI barcode scanner."
+}
 $SNAPIStream | Read-SNAPIBarcode
 $SNAPIStream | Close-SNAPIBarcodeScanner

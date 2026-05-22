@@ -106,26 +106,63 @@ Function Show-TTYDisplayClockAnimation
     )
     Process
     {
-        $min = 0x31;
-        $max = 0x58;
+        $minLine1 = 0x31;
+        $maxLine1 = 0x3D;
 
-        $pos = $min;
+        $minLine2 = 0x45;
+        $maxLine2 = 0x51;
+
+        $pos = $minLine1;
+        $i = $true;
+        $Line1 = $true;
 
         while ($true)
         {
             try
             {
-
                     $DeviceName | Clear-TTYDisplay
                     $DeviceName | Set-TTYDisplayPosition -Position $pos
 
                     $DeviceName | Write-TTYDisplayText -Text ([DateTime]::Now.ToString("HH:mm:ss")+" ")
 
-                    Start-Sleep -Milliseconds 1000;
-                    $pos++
-                    if ($pos -gt $max)
+                    $date = [DateTime]::Now.ToString("d.M.yyyy")
+                    if ($Line1)
                     {
-                        $pos = $min
+                        $DeviceName | Set-TTYDisplayPosition -Position ($minLine2+(20-$date.Length)/2)
+                    } else
+                    {
+                        $DeviceName | Set-TTYDisplayPosition -Position ($minLine1+(20-$date.Length)/2)
+                    }
+                    $DeviceName | Write-TTYDisplayText -Text $date
+
+
+                    Start-Sleep -Milliseconds 1000;
+
+                    if ($i)
+                    {
+                        $pos++
+                    } else
+                    {
+                        $pos--
+                    }
+
+                    if (( ($Line1) -and ($pos -ge $maxLine1)) -or ( (-not $Line1) -and ($pos -ge $maxLine2)))
+                    {
+                        $i = $false
+                    }
+
+                    if (( ($Line1) -and ($pos -le $minLine1)) -or ( (-not $Line1) -and ($pos -le $minLine2)) )
+                    {
+                        $i = $true
+
+                        $Line1 = -not $Line1
+                        if ($Line1)
+                        {
+                            $pos = $minLine1
+                        } else
+                        {
+                            $pos = $minLine2;
+                        }
                     }
             }
             catch
@@ -136,6 +173,38 @@ Function Show-TTYDisplayClockAnimation
         }
     }
 }
+
+Function Show-TTYDisplayClock
+{
+    Param
+    (
+        [parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [string]$DeviceName
+    )
+    Process
+    {
+        $DeviceName | Clear-TTYDisplay
+
+        while ($true)
+        {
+            try
+            {
+                    $time = ("  " + [DateTime]::Now.ToString("HH:mm:ss") + "  ")
+
+                    $DeviceName | Set-TTYDisplayPosition -Position 52
+                    $DeviceName | Write-TTYDisplayText -Text $time
+
+                    Start-Sleep -Milliseconds 1000;
+            }
+            catch
+            {
+                $_
+            }
+        }
+    }
+}
+
+
 
 Function Show-TTYDisplayEyeAnimation
 {
@@ -150,6 +219,9 @@ Function Show-TTYDisplayEyeAnimation
 
         $eyePosMin = 0;
         $eyePosMax = 4;
+
+        $x=0
+        $y=0
 
         while ($true)
         {
@@ -166,6 +238,14 @@ Function Show-TTYDisplayEyeAnimation
                         4 { $eye = "(OO)" }
                     }
 
+
+                    $eye = "".PadLeft($x) + $eye
+
+                    if ($y -gt 0)
+                    {
+                        $eye = "".PadLeft(20) + $eye
+                    }
+
                     $DeviceName | Write-TTYDisplayText -Text $eye
 
                     Start-Sleep -Milliseconds 200;
@@ -174,6 +254,18 @@ Function Show-TTYDisplayEyeAnimation
                     if ($eyePos -gt $eyePosMax)
                     {
                         $eyePos = $eyePosMin
+                        $x++;
+
+                        if ($x -gt 15)
+                        {
+                            $x = 0
+                            $y++;
+
+                            if ($y -gt 1)
+                            {
+                                $y = 0
+                            }
+                        }
                     }
             }
             catch
@@ -229,3 +321,4 @@ Function Show-TTYDisplayCarAnimation
     }
 }
 
+Export-ModuleMember -Function Write-TTYDisplayText, Clear-TTYDisplay, Set-TTYDisplayPosition, Show-TTYDisplayClock, Show-TTYDisplayClockAnimation, Show-TTYDisplayEyeAnimation, Show-TTYDisplayCarAnimation

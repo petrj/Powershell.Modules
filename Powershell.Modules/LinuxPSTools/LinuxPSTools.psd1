@@ -27,6 +27,7 @@
         'Clear-TTYDisplay',
         'Set-TTYDisplayPosition',
         'Show-TTYDisplayClockAnimation',
+        'Show-TTYDisplayClock',
         'Show-TTYDisplayEyeAnimation',
         'Show-TTYDisplayCarAnimation',
         'Send-ToVoiceGenerator'

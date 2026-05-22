@@ -11,7 +11,8 @@
         'BarcodeInfo.psm1',
         'BarcodeScanner.psm1',
         'GigatekDisplay.psm1',
-        'VoiceGenerator.psm1'
+        'VoiceGenerator.psm1',
+        'SNAPI.psm1'
     )
 
     FunctionsToExport = @(
@@ -29,6 +30,10 @@
         'Show-TTYDisplayEyeAnimation',
         'Show-TTYDisplayCarAnimation',
         'Send-ToVoiceGenerator'
+        'Open-SNAPIBarcodeScanner',
+        'Close-SNAPIBarcodeScanner',
+        'Read-SNAPIBarcode',
+        'Start-SNAPIBarcodeListener'
     )
     CmdletsToExport   = @()
     VariablesToExport = @()

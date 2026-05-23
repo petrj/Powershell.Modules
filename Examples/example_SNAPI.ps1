@@ -11,7 +11,7 @@ if (Get-Module -Name LinuxPSTools)
     Write-Host "LinuxPSTools module not loaded, loading for the first time..."
 }
 
-Import-Module .\LinuxPSTools.psd1
+Import-Module ..\Powershell.Modules\LinuxPSTools\LinuxPSTools.psd1
 
 $SNAPIStream = Open-SNAPIBarcodeScanner -DevicePath "/dev/hidraw0"
 

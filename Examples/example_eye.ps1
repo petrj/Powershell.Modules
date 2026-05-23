@@ -5,7 +5,7 @@ if (Get-Module -Name LinuxPSTools) {
     Remove-Module LinuxPSTools
 }
 
-Import-Module .\LinuxPSTools.psd1
+Import-Module ..\Powershell.Modules\LinuxPSTools\LinuxPSTools.psd1
 
 Clear-TTYDisplay -DeviceName "/dev/ttyUSB0"
-"/dev/ttyUSB0" | Show-TTYDisplayClock
+"/dev/ttyUSB0" | Show-TTYDisplayEyeAnimation

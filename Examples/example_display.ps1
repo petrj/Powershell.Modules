@@ -6,7 +6,7 @@ if (Get-Module -Name LinuxPSTools)
     Remove-Module LinuxPSTools
 }
 
-Import-Module .\LinuxPSTools.psd1
+Import-Module ..\Powershell.Modules\LinuxPSTools\LinuxPSTools.psd1
 
 function Convert-ToAscii
 {
@@ -22,7 +22,7 @@ function Convert-ToAscii
 }
 
 Clear-TTYDisplay -DeviceName "/dev/ttyUSB0"
-Write-TTYDisplayText -DeviceName "/dev/ttyUSB0" -Text "Hello, World!" 
+Write-TTYDisplayText -DeviceName "/dev/ttyUSB0" -Text "Hello, World!"
 
 $port = 5000
 

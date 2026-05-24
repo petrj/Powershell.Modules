@@ -124,8 +124,6 @@ function Get-WeatherTTY {
     }
 }
 
-
-
 function Convert-TTYText
 {
     [parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -134,13 +132,20 @@ function Convert-TTYText
     )
     process
     {
-        Write-Host "Converting text for TTY display: $InputText"
+        #Write-Host "Converting text for TTY display: $InputText"
 
         $InputText = $InputText.Replace("'", "#")
         $InputText = $InputText.Replace("`"", "#")
+        $InputText = $InputText.Replace("’", "#")
+
         $InputText = $InputText.Replace("%TIME%", [datetime]::Now.ToString("HH:mm:ss"))
         $InputText = $InputText.Replace("%DATE%", [datetime]::Now.ToString("d.M.yyyy"))
         $InputText = $InputText.Replace("%DAY%", [datetime]::Now.ToString("dddd"))
+
+        $normalized = $InputText.Normalize([System.Text.NormalizationForm]::FormD)
+        $withoutDiacritics = $normalized -replace '\p{M}', ''
+        $InputText = $withoutDiacritics -replace '[^\x00-\x7F]', ''
+
     }
     end
     {
@@ -148,96 +153,105 @@ function Convert-TTYText
     }
 }
 
+Clear-TTYDisplay -DeviceName "/dev/ttyUSB0"
+
 while ($true)
 {
-
-    if ($global:news -eq $null)
+    try
     {
-        $global:news = Get-BbcDisplayLines
-    }
-    if ($global:weather -eq $null)
-    {
-        $global:weather = Get-WeatherTTY -Location "Benesov"
-    }
-    $weather = $global:weather
-    $news = $global:news
 
-    $news = $news | Get-Random -Count $news.Count
-
-    $display = @()
-
-    $newsIndex = 0;
-    $infoIndex = 0;
-
-    while (($newsIndex -lt $news.Count))
-    {
-        # Title
-        switch ($infoIndex)
+        if ($global:news -eq $null)
         {
-            5 {
-                $title = "%TIME%"
-                $line = "%DATE%"
-              }
-            3 {
-                $title = "Weather"
-                $line = $weather
-            }
-            default
-            {
-                if ($newsIndex % 3 -eq 0)
-                {
-                    $title = "BBC News"
-                } else
-                {
-                    $title = "%TIME%"
-                }
-                $line = $news[$newsIndex]
-                $newsIndex++
-            }
+            $global:news = Get-BbcDisplayLines
         }
-
-        $display+= @{
-            Title = $title
-            Line = $line
-        }
-
-        $infoIndex++;
-        if ($infoIndex -gt 7)
+        if ($global:weather -eq $null)
         {
-            $infoIndex = 0
+            $global:weather = Get-WeatherTTY -Location "Benesov"
         }
-    }
+        $weather = $global:weather
+        $news = $global:news
 
+        $news = $news | Get-Random -Count $news.Count
 
-    $twentyChars = "                    "
+        $display = @()
 
-    foreach ($item in $display)
-    {
-         $displayText = Convert-TTYText -InputText $item.Line
-        $displayText = ($twentyChars + $displayText)
+        $newsIndex = 0;
+        $infoIndex = 0;
 
-        # scroll text
-        $pos = 0
-        while ($pos -le $displayText.Length)
+        while (($newsIndex -lt $news.Count))
         {
             # Title
-            "/dev/ttyUSB0" | Set-TTYDisplayPosition -Position 49
+            switch ($infoIndex)
+            {
+                5 {
+                    $title = "%TIME%"
+                    $line = "%DATE%"
+                }
+                3 {
+                    $title = "Weather"
+                    $line = $weather
+                }
+                default
+                {
+                    if ($newsIndex % 3 -eq 0)
+                    {
+                        $title = "BBC News"
+                    } else
+                    {
+                        $title = "%TIME%"
+                    }
+                    $line = $news[$newsIndex]
+                    $newsIndex++
+                }
+            }
 
-            $title = Convert-TTYText -InputText $item.Title
-            $title = $title.PadRight(20)
+            $display+= @{
+                Title = $title
+                Line = $line
+            }
 
-            "/dev/ttyUSB0" | Write-TTYDisplayText -Text $title
-
-            "/dev/ttyUSB0" | Set-TTYDisplayPosition -Position 69
-
-            $substring = $displayText.Substring($pos, [Math]::Min(20, $displayText.Length - $pos))
-
-            while ($substring.Length -lt 20) { $substring = $substring + " " } # clearing
-
-            "/dev/ttyUSB0" | Write-TTYDisplayText -Text $substring
-            Start-Sleep -Milliseconds 100
-            $pos++
+            $infoIndex++;
+            if ($infoIndex -gt 7)
+            {
+                $infoIndex = 0
+            }
         }
-    }
 
+
+        $twentyChars = "                    "
+
+        foreach ($item in $display)
+        {
+            $displayText = Convert-TTYText -InputText $item.Line
+            $displayText = ($twentyChars + $displayText)
+
+            Write-Host ((Convert-TTYText -InputText $item.Title) + " - " + (Convert-TTYText -InputText $item.Line))
+
+            # scroll text
+            $pos = 0
+            while ($pos -le $displayText.Length)
+            {
+                # Title
+                "/dev/ttyUSB0" | Set-TTYDisplayPosition -Position 49
+
+                $title = Convert-TTYText -InputText $item.Title
+                $title = $title.PadRight(20)
+
+                "/dev/ttyUSB0" | Write-TTYDisplayText -Text $title
+
+                "/dev/ttyUSB0" | Set-TTYDisplayPosition -Position 69
+
+                $substring = $displayText.Substring($pos, [Math]::Min(20, $displayText.Length - $pos))
+
+                while ($substring.Length -lt 20) { $substring = $substring + " " } # clearing
+
+                "/dev/ttyUSB0" | Write-TTYDisplayText -Text $substring
+                Start-Sleep -Milliseconds 100
+                $pos++
+            }
+        }
+    } catch
+    {
+        Write-Host $_
+    }
 }

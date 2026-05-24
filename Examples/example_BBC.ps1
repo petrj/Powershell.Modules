@@ -184,7 +184,13 @@ while ($true)
             }
             default
             {
-                $title = "BBC News"
+                if ($newsIndex % 3 -eq 0)
+                {
+                    $title = "BBC News"
+                } else
+                {
+                    $title = "%TIME%"
+                }
                 $line = $news[$newsIndex]
                 $newsIndex++
             }
@@ -207,21 +213,21 @@ while ($true)
 
     foreach ($item in $display)
     {
-        # Title
-        "/dev/ttyUSB0" | Set-TTYDisplayPosition -Position 49
-
-        $title = Convert-TTYText -InputText $item.Title
-        $title = $title.PadRight(20)
-
-        "/dev/ttyUSB0" | Write-TTYDisplayText -Text $title
-
-        $displayText = Convert-TTYText -InputText $item.Line
+         $displayText = Convert-TTYText -InputText $item.Line
         $displayText = ($twentyChars + $displayText)
 
         # scroll text
         $pos = 0
         while ($pos -le $displayText.Length)
         {
+            # Title
+            "/dev/ttyUSB0" | Set-TTYDisplayPosition -Position 49
+
+            $title = Convert-TTYText -InputText $item.Title
+            $title = $title.PadRight(20)
+
+            "/dev/ttyUSB0" | Write-TTYDisplayText -Text $title
+
             "/dev/ttyUSB0" | Set-TTYDisplayPosition -Position 69
 
             $substring = $displayText.Substring($pos, [Math]::Min(20, $displayText.Length - $pos))
@@ -229,7 +235,7 @@ while ($true)
             while ($substring.Length -lt 20) { $substring = $substring + " " } # clearing
 
             "/dev/ttyUSB0" | Write-TTYDisplayText -Text $substring
-            Start-Sleep -Milliseconds 50
+            Start-Sleep -Milliseconds 100
             $pos++
         }
     }

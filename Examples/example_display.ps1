@@ -18,6 +18,11 @@ function Convert-ToAscii
 
     $normalized = $Text.Normalize([System.Text.NormalizationForm]::FormD)
     $withoutDiacritics = $normalized -replace '\p{M}', ''
+
+    $withoutDiacritics = $withoutDiacritics.Replace("'", "*")
+    $withoutDiacritics = $withoutDiacritics.Replace("`"", "*")
+    $withoutDiacritics = $withoutDiacritics.Replace("’", "*")
+
     return $withoutDiacritics -replace '[^\x00-\x7F]', ''
 }
 

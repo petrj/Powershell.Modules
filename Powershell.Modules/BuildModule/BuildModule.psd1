@@ -23,7 +23,8 @@
         'Get-SecureStringFromUserInput',
         'Test-SonarToolInstalled',
         'Install-SonarDotNetTool',
-        'Invoke-SonarAnalysis'
+        'Invoke-SonarAnalysis',
+        'Export-SonarQubeAnalysis'
     )
     CmdletsToExport   = @()
     VariablesToExport = @()

@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '1.0.5'
     GUID              = 'a1b2c3d4-5678-9abc-def0-1234567890ac'
     Author            = 'Combined Modules'
     CompanyName       = 'Open Source'

@@ -76,7 +76,7 @@ function Invoke-SonarAnalysis
 
         $testResultsDir = Join-Path $WorkingDirectory "TestResults"
         $testResultsPattern = Join-Path $testResultsDir "*.trx"
-        $coveragePattern = Join-Path $testResultsDir "*" "coverage.opencover.xml"
+        $coveragePattern = Join-Path $testResultsDir "*.opencover.xml"
 
         Initialize-TestResultsDirectory -Path $testResultsDir
 
